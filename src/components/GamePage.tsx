@@ -109,6 +109,39 @@ export default function GamePage() {
     chestCenter.position.set(0, 1.42, -0.325);
     player.add(chestCenter);
 
+    // Detalhes metalicos da armadura
+    const trimMetal = new THREE.MeshStandardMaterial({
+      color: 0xf0c65a, metalness: 0.92, roughness: 0.2
+    });
+    const blueGem = new THREE.MeshStandardMaterial({
+      color: 0x31b9ff, metalness: 0.5, roughness: 0.18,
+      emissive: 0x087acb, emissiveIntensity: 0.8
+    });
+
+    // Placas laterais do peito
+    for (const x of [-0.23, 0.23]) {
+      const plate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.13, 0.48, 0.055), silver
+      );
+      plate.position.set(x, 1.43, -0.37);
+      player.add(plate);
+
+      for (const y of [1.24, 1.62]) {
+        const rivet = new THREE.Mesh(
+          new THREE.SphereGeometry(0.035, 10, 8), trimMetal
+        );
+        rivet.position.set(x, y, -0.415);
+        player.add(rivet);
+      }
+    }
+
+    // Joia azul no centro da armadura
+    const chestGem = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.105, 1), blueGem
+    );
+    chestGem.position.set(0, 1.68, -0.39);
+    player.add(chestGem);
+
     const belt = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.14, 0.52), dark);
     belt.position.y = 0.82;
     player.add(belt);
@@ -176,9 +209,22 @@ export default function GamePage() {
     const blade = new THREE.Mesh(new THREE.BoxGeometry(0.13, 1.05, 0.045), silver);
     blade.position.y = 0.55;
     sword.add(blade);
+
+    // Filete metalico no centro da espada
+    const bladeLine = new THREE.Mesh(
+      new THREE.BoxGeometry(0.025, 0.78, 0.012), trimMetal
+    );
+    bladeLine.position.set(0, 0.58, -0.03);
+    sword.add(bladeLine);
     const guard = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.09, 0.12), gold);
     guard.position.y = 0.08;
     sword.add(guard);
+
+    const swordGem = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.09, 1), blueGem
+    );
+    swordGem.position.set(0, 0.1, -0.075);
+    sword.add(swordGem);
     const grip = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.32, 0.12), dark);
     grip.position.y = -0.1;
     sword.add(grip);
