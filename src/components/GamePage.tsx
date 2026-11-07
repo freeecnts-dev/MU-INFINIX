@@ -254,6 +254,7 @@ export default function GamePage() {
     }
 
     // Ombreiras com espinhos
+    const demonArms: THREE.Mesh[] = [];
     for (const x of [-0.72, 0.72]) {
       const shoulder = new THREE.Mesh(
         new THREE.SphereGeometry(0.34, 12, 10),
@@ -280,6 +281,7 @@ export default function GamePage() {
       arm.position.set(x * 1.1, 1.25, 0.05);
       arm.rotation.z = x < 0 ? -0.18 : 0.18;
       monster.add(arm);
+      demonArms.push(arm);
 
       for (let j = 0; j < 3; j++) {
         const claw = new THREE.Mesh(
@@ -401,6 +403,8 @@ export default function GamePage() {
     let frame = 0;
     let attackTime = 0;
     let animationId = 0;
+    let demonAttackTime = 0;
+    let demonAttackCooldown = 0;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'w' || event.key === 'ArrowUp') controls.current.forward = true;
@@ -424,6 +428,36 @@ export default function GamePage() {
     const animate = () => {
       animationId = requestAnimationFrame(animate);
       frame += 0.04;
+
+      // Respiração e movimentos do Demônio das Sombras
+      const breathing = Math.sin(frame * 2.2) * 0.045;
+      demonBody.position.y = 1.25 + breathing;
+      chestArmor.position.y = 1.42 + breathing;
+      demonHead.rotation.z = Math.sin(frame * 1.5) * 0.07;
+
+      // Olhos pulsando e aura girando
+      demonGlow.emissiveIntensity = 1.8 + (Math.sin(frame * 5) + 1) * 1.1;
+      aura.rotation.y += 0.035;
+
+      // Ataque visual quando o guerreiro chega perto
+      const demonDistance = monster.position.distanceTo(player.position);
+      if (demonAttackCooldown > 0) demonAttackCooldown--;
+      if (demonDistance < 4 && demonAttackCooldown <= 0) {
+        demonAttackTime = 32;
+        demonAttackCooldown = 100;
+      }
+
+      if (demonAttackTime > 0) demonAttackTime--;
+
+      demonArms.forEach((arm, index) => {
+        const side = index === 0 ? -1 : 1;
+        const idleMove = Math.sin(frame * 2 + index) * 0.045;
+        const attackMove = demonAttackTime > 0
+          ? Math.sin((32 - demonAttackTime) / 32 * Math.PI) * 1.1
+          : 0;
+        arm.rotation.z = side * (0.18 + idleMove);
+        arm.rotation.x = -attackMove;
+      });
 
       const moving = controls.current.forward || controls.current.back ||
         controls.current.left || controls.current.right;
