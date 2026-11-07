@@ -1,10 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function GamePage() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const controls = useRef({ forward: false, back: false, left: false, right: false });
   const attackRef = useRef(false);
+  const [playerHp, setPlayerHp] = useState(100);
+  const [playerMp] = useState(100);
+  const [monsterHp, setMonsterHp] = useState(100);
+  const [experience, setExperience] = useState(0);
 
   useEffect(() => {
     const container = canvasRef.current;
@@ -231,9 +235,10 @@ export default function GamePage() {
     const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), gold);
     pommel.position.y = -0.28;
     sword.add(pommel);
-    sword.position.set(0.78, 0.92, -0.35);
-    sword.rotation.x = -0.12;
-    player.add(sword);
+    // Espada presa à mão direita para acompanhar os golpes
+    sword.position.set(0.13, -0.43, -0.12);
+    sword.rotation.x = -0.25;
+    rightArm.add(sword);
 
     // DEMONIO DAS SOMBRAS - MU INFINIX
     const monster = new THREE.Group();
@@ -451,6 +456,11 @@ export default function GamePage() {
     let animationId = 0;
     let demonAttackTime = 0;
     let demonAttackCooldown = 0;
+    let wasAttacking = false;
+    let monsterHealth = 100;
+    let heroHealth = 100;
+    let totalExperience = 0;
+    let monsterDefeated = false;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'w' || event.key === 'ArrowUp') controls.current.forward = true;
@@ -523,12 +533,36 @@ export default function GamePage() {
       legs[0].rotation.x = moving ? Math.sin(frame * 5) * 0.5 : 0;
       legs[1].rotation.x = moving ? -Math.sin(frame * 5) * 0.5 : 0;
 
-      if (attackRef.current) attackTime = 12;
+      // Ataque com golpe único ao pressionar o botão
+      const attacking = attackRef.current;
+      if (attacking && !wasAttacking) {
+        attackTime = 12;
+
+        const distanceToMonster = player.position.distanceTo(monster.position);
+        if (distanceToMonster < 3.2 && !monsterDefeated) {
+          monsterHealth = Math.max(0, monsterHealth - 25);
+          setMonsterHp(monsterHealth);
+
+          if (monsterHealth === 0) {
+            monsterDefeated = true;
+            monster.visible = false;
+            totalExperience += 50;
+            setExperience(totalExperience);
+          }
+        }
+      }
+      wasAttacking = attacking;
+
       if (attackTime > 0) {
-        rightArm.rotation.x = -Math.sin((12 - attackTime) / 12 * Math.PI) * 1.8;
+        const swing = Math.sin((12 - attackTime) / 12 * Math.PI);
+        rightArm.rotation.x = -swing * 1.8;
+        sword.rotation.x = -0.25 - swing * 1.1;
+        sword.rotation.z = -swing * 0.35;
         attackTime--;
       } else {
         rightArm.rotation.x = 0;
+        sword.rotation.x = -0.25;
+        sword.rotation.z = 0;
       }
 
       camera.position.x += (player.position.x - camera.position.x) * 0.08;
@@ -571,7 +605,7 @@ export default function GamePage() {
           <div className="font-bold tracking-widest text-amber-400">MU INFINIX</div>
           <div className="text-[10px] text-slate-400">PROTÓTIPO 3D</div>
         </div>
-        <div className="text-xs text-amber-200">Guerreiro • Nível 1</div>
+        <div className="text-xs text-amber-200">Guerreiro • Nível 1 • EXP: {experience}</div>
       </div>
 
       <div ref={canvasRef} className="flex-1 min-h-0 relative">
@@ -579,7 +613,18 @@ export default function GamePage() {
           Monstro à frente
         </div>
         <div className="absolute top-3 right-3 z-10 rounded bg-black/50 px-3 py-2 text-xs">
-          HP: <span className="text-green-400">100%</span>
+          <div className="text-green-400">HP: {playerHp}/100</div>
+          <div className="text-blue-300">MP: {playerMp}/100</div>
+          <div className="text-red-300">Demônio: {monsterHp}/100</div>
+          <div className="mt-1 h-1.5 w-28 rounded bg-slate-700 overflow-hidden">
+            <div className="h-full bg-red-500" style={{ width: playerHp + '%' }} />
+          </div>
+          <div className="mt-1 h-1.5 w-28 rounded bg-slate-700 overflow-hidden">
+            <div className="h-full bg-blue-500" style={{ width: playerMp + '%' }} />
+          </div>
+          <div className="mt-1 h-1.5 w-28 rounded bg-slate-700 overflow-hidden">
+            <div className="h-full bg-red-700" style={{ width: monsterHp + '%' }} />
+          </div>
         </div>
       </div>
 
