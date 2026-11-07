@@ -32,17 +32,60 @@ export default function GamePage() {
     sun.position.set(5, 10, 5);
     scene.add(sun);
 
+    // CENARIO MEDIEVAL MU INFINIX
+    scene.background = new THREE.Color(0x899bb0);
+    scene.fog = new THREE.Fog(0x899bb0, 28, 85);
+
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 100),
-      new THREE.MeshStandardMaterial({ color: 0x34432d })
+      new THREE.PlaneGeometry(120, 120),
+      new THREE.MeshStandardMaterial({ color: 0x354b32, roughness: 1 })
     );
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.05;
+    ground.position.y = -0.06;
     scene.add(ground);
 
-    const grid = new THREE.GridHelper(100, 50, 0x68734b, 0x46533b);
-    grid.position.y = 0;
-    scene.add(grid);
+    // Caminho de pedras
+    const path = new THREE.Mesh(
+      new THREE.PlaneGeometry(5, 110),
+      new THREE.MeshStandardMaterial({ color: 0x77766d, roughness: 1 })
+    );
+    path.rotation.x = -Math.PI / 2;
+    path.position.set(0, 0, -15);
+    scene.add(path);
+
+    const stoneMaterial = new THREE.MeshStandardMaterial({
+      color: 0xaaa69a, roughness: 1
+    });
+
+    for (let i = 0; i < 95; i++) {
+      const stone = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(0.22 + (i % 3) * 0.06, 0),
+        stoneMaterial
+      );
+      stone.position.set(
+        ((i * 17) % 45) / 10 - 2.2,
+        0.035,
+        15 - i * 0.65
+      );
+      stone.scale.set(1.3, 0.25, 0.8);
+      scene.add(stone);
+    }
+
+    // Rochas nas laterais
+    const rockMaterial = new THREE.MeshStandardMaterial({
+      color: 0x555b59, roughness: 1
+    });
+
+    for (let i = 0; i < 18; i++) {
+      const rock = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(0.45 + (i % 3) * 0.18, 1),
+        rockMaterial
+      );
+      const side = i % 2 === 0 ? -1 : 1;
+      rock.position.set(side * (4 + (i % 4)), 0.3, 8 - i * 2.5);
+      rock.rotation.set(i * 0.4, i, i * 0.2);
+      scene.add(rock);
+    }
 
     const player = new THREE.Group();
     scene.add(player);
@@ -163,25 +206,75 @@ export default function GamePage() {
     monster.position.set(0, 0, -7);
     scene.add(monster);
 
-    for (let i = 0; i < 24; i++) {
+    // Floresta com copas em camadas
+    const trunkMaterial = new THREE.MeshStandardMaterial({
+      color: 0x49301e, roughness: 1
+    });
+    const leafMaterials = [
+      new THREE.MeshStandardMaterial({ color: 0x183d29, roughness: 1 }),
+      new THREE.MeshStandardMaterial({ color: 0x285337, roughness: 1 }),
+      new THREE.MeshStandardMaterial({ color: 0x376441, roughness: 1 })
+    ];
+
+    for (let i = 0; i < 34; i++) {
       const tree = new THREE.Group();
+      const side = i % 2 === 0 ? -1 : 1;
+      const x = side * (5 + (i % 5) * 2.1);
+      const z = 12 - Math.floor(i / 2) * 5;
+
       const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.15, 0.22, 1.5, 6),
-        new THREE.MeshStandardMaterial({ color: 0x51351f })
+        new THREE.CylinderGeometry(0.18, 0.3, 2.5, 8),
+        trunkMaterial
       );
-      trunk.position.y = 0.75;
+      trunk.position.y = 1.25;
       tree.add(trunk);
 
-      const leaves = new THREE.Mesh(
-        new THREE.ConeGeometry(1, 2.5, 7),
-        new THREE.MeshStandardMaterial({ color: 0x24452d })
-      );
-      leaves.position.y = 2.4;
-      tree.add(leaves);
+      for (let layer = 0; layer < 3; layer++) {
+        const leaves = new THREE.Mesh(
+          new THREE.ConeGeometry(1.35 - layer * 0.22, 2.5, 9),
+          leafMaterials[(i + layer) % leafMaterials.length]
+        );
+        leaves.position.y = 2.5 + layer * 0.85;
+        tree.add(leaves);
+      }
 
-      const side = i % 2 === 0 ? -1 : 1;
-      tree.position.set(side * (5 + (i % 4) * 2), 0, -12 + Math.floor(i / 2) * 4);
+      tree.position.set(x, 0, z);
+      tree.rotation.y = i * 0.7;
       scene.add(tree);
+    }
+
+    // Vegetação pequena
+    const grassMaterial = new THREE.MeshStandardMaterial({
+      color: 0x55713a, roughness: 1
+    });
+
+    for (let i = 0; i < 100; i++) {
+      const grass = new THREE.Mesh(
+        new THREE.ConeGeometry(0.12, 0.45, 5),
+        grassMaterial
+      );
+      grass.position.set(
+        ((i * 37) % 90) - 45,
+        0.2,
+        ((i * 19) % 100) - 50
+      );
+      scene.add(grass);
+    }
+
+    // Pequenas luzes magicas na floresta
+    const glowMaterial = new THREE.MeshBasicMaterial({ color: 0xffd66b });
+
+    for (let i = 0; i < 18; i++) {
+      const glow = new THREE.Mesh(
+        new THREE.SphereGeometry(0.055, 8, 8),
+        glowMaterial
+      );
+      glow.position.set(
+        (i % 2 === 0 ? -1 : 1) * (3 + (i % 4)),
+        0.8 + (i % 3) * 0.5,
+        -4 - i * 2
+      );
+      scene.add(glow);
     }
 
     camera.position.set(0, 4, 7);
