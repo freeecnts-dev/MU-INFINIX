@@ -3,6 +3,7 @@ import Sidebar, { type Page } from '@/components/Sidebar';
 import Dashboard from '@/components/Dashboard';
 import MonstersPage from '@/components/MonstersPage';
 import PlayersPage from '@/components/PlayersPage';
+import GamePage from '@/components/GamePage';
 import { supabase, type Monster, type Player } from '@/lib/supabase';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
           )}
           {page === 'monstros' && <MonstersPage monsterCount={monsters.length} onCountChange={fetchStats} />}
           {page === 'jogadores' && <PlayersPage onCountChange={fetchStats} />}
+{page === 'jogar' && <GamePage />}
         </div>
       </main>
     </div>

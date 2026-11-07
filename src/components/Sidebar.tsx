@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Menu, X, Home, Skull, Users, Shield, Scroll } from 'lucide-react';
+import { Menu, X, Home, Skull, Users, Shield, Scroll, Gamepad2 } from 'lucide-react';
 
-export type Page = 'inicio' | 'monstros' | 'jogadores';
+export type Page = 'inicio' | 'monstros' | 'jogadores' | 'jogar ';
 
 type SidebarProps = {
   currentPage: Page;
@@ -9,6 +9,7 @@ type SidebarProps = {
 };
 
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
+  { id: 'jogar', label: 'Jogar', icon: Gamepad2 },
   { id: 'inicio', label: 'Início', icon: Home },
   { id: 'monstros', label: 'Gerenciar Monstros', icon: Skull },
   { id: 'jogadores', label: 'Gerenciar Jogadores', icon: Users },
