@@ -47,46 +47,103 @@ export default function GamePage() {
     const player = new THREE.Group();
     scene.add(player);
 
-    const armor = new THREE.MeshStandardMaterial({ color: 0x24558b, metalness: 0.65, roughness: 0.35 });
-    const gold = new THREE.MeshStandardMaterial({ color: 0xd6a33b, metalness: 0.7 });
-    const skin = new THREE.MeshStandardMaterial({ color: 0xd5a47b });
-    const dark = new THREE.MeshStandardMaterial({ color: 0x202631 });
+    const armor = new THREE.MeshStandardMaterial({ color: 0x173d70, metalness: 0.8, roughness: 0.28 });
+    const gold = new THREE.MeshStandardMaterial({ color: 0xd9a52e, metalness: 0.8, roughness: 0.24 });
+    const silver = new THREE.MeshStandardMaterial({ color: 0xc8d5e5, metalness: 0.9, roughness: 0.2 });
+    const dark = new THREE.MeshStandardMaterial({ color: 0x202633, metalness: 0.35, roughness: 0.65 });
+    const skin = new THREE.MeshStandardMaterial({ color: 0xc58b63, roughness: 0.8 });
+    const red = new THREE.MeshStandardMaterial({ color: 0x8d1824, metalness: 0.35 });
 
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.1, 0.45), armor);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.82, 1.05, 0.48), armor);
     body.position.y = 1.35;
     player.add(body);
 
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), skin);
+    const chest = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.68, 0.09), silver);
+    chest.position.set(0, 1.42, -0.27);
+    player.add(chest);
+
+    const chestCenter = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.42, 0.035), gold);
+    chestCenter.position.set(0, 1.42, -0.325);
+    player.add(chestCenter);
+
+    const belt = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.14, 0.52), dark);
+    belt.position.y = 0.82;
+    player.add(belt);
+
+    const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.06), gold);
+    buckle.position.set(0, 0.82, -0.3);
+    player.add(buckle);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.27, 20, 16), skin);
     head.position.y = 2.12;
     player.add(head);
 
-    const helmet = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.55, 4), gold);
-    helmet.position.y = 2.48;
-    helmet.rotation.y = Math.PI / 4;
+    const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.62), silver);
+    helmet.position.y = 2.27;
     player.add(helmet);
 
-    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.85, 0.3), gold);
-    leftArm.position.set(-0.55, 1.35, 0);
+    const helmetFront = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.12, 0.12), gold);
+    helmetFront.position.set(0, 2.12, -0.25);
+    player.add(helmetFront);
+
+    const crest = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.48, 6), red);
+    crest.position.set(0, 2.62, 0);
+    player.add(crest);
+
+    const visor = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.07, 0.06), dark);
+    visor.position.set(0, 2.17, -0.29);
+    player.add(visor);
+
+    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.78, 0.3), armor);
+    leftArm.position.set(-0.58, 1.32, 0);
     player.add(leftArm);
 
-    const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.85, 0.3), gold);
-    rightArm.position.set(0.55, 1.35, 0);
+    const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.78, 0.3), armor);
+    rightArm.position.set(0.58, 1.32, 0);
     player.add(rightArm);
 
-    const legs: THREE.Mesh[] = [];
-    for (const x of [-0.22, 0.22]) {
-      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.75, 0.35), dark);
-      leg.position.set(x, 0.48, 0);
-      player.add(leg);
-      legs.push(leg);
+    for (const x of [-0.58, 0.58]) {
+      const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 10), gold);
+      shoulder.scale.set(1.15, 0.7, 1);
+      shoulder.position.set(x, 1.72, 0);
+      player.add(shoulder);
+
+      const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.34), silver);
+      forearm.position.set(x, 0.98, -0.02);
+      player.add(forearm);
     }
 
-    const sword = new THREE.Mesh(
-      new THREE.BoxGeometry(0.1, 1.25, 0.12),
-      new THREE.MeshStandardMaterial({ color: 0xdceaff, metalness: 0.9, roughness: 0.2 })
-    );
-    sword.position.set(0.55, 1.1, -0.35);
-    sword.rotation.x = -0.25;
+    const legs = [];
+    for (const x of [-0.23, 0.23]) {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.65, 0.34), dark);
+      leg.position.set(x, 0.43, 0);
+      player.add(leg);
+      legs.push(leg);
+
+      const boot = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.48), armor);
+      boot.position.set(x, 0.12, -0.07);
+      player.add(boot);
+
+      const knee = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.2, 0.38), gold);
+      knee.position.set(x, 0.68, -0.02);
+      player.add(knee);
+    }
+
+    const sword = new THREE.Group();
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.13, 1.05, 0.045), silver);
+    blade.position.y = 0.55;
+    sword.add(blade);
+    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.09, 0.12), gold);
+    guard.position.y = 0.08;
+    sword.add(guard);
+    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.32, 0.12), dark);
+    grip.position.y = -0.1;
+    sword.add(grip);
+    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), gold);
+    pommel.position.y = -0.28;
+    sword.add(pommel);
+    sword.position.set(0.78, 0.92, -0.35);
+    sword.rotation.x = -0.12;
     player.add(sword);
 
     const monster = new THREE.Group();
