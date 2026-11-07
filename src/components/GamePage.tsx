@@ -189,22 +189,140 @@ export default function GamePage() {
     sword.rotation.x = -0.12;
     player.add(sword);
 
+    // DEMONIO DAS SOMBRAS - MU INFINIX
     const monster = new THREE.Group();
-    const monsterBody = new THREE.Mesh(
-      new THREE.BoxGeometry(1.1, 1.5, 0.8),
-      new THREE.MeshStandardMaterial({ color: 0x8d2525, roughness: 0.8 })
-    );
-    monsterBody.position.y = 0.9;
-    monster.add(monsterBody);
 
-    const monsterHead = new THREE.Mesh(
-      new THREE.SphereGeometry(0.38, 12, 12),
-      new THREE.MeshStandardMaterial({ color: 0x501818 })
+    const demonSkin = new THREE.MeshStandardMaterial({
+      color: 0x65151d, roughness: 0.72, metalness: 0.15
+    });
+    const demonArmor = new THREE.MeshStandardMaterial({
+      color: 0x171923, roughness: 0.3, metalness: 0.8
+    });
+    const demonGold = new THREE.MeshStandardMaterial({
+      color: 0x9b6427, metalness: 0.75, roughness: 0.25
+    });
+    const demonGlow = new THREE.MeshStandardMaterial({
+      color: 0xff1717,
+      emissive: 0xff0000,
+      emissiveIntensity: 2.5
+    });
+
+    // Corpo e peito
+    const demonBody = new THREE.Mesh(
+      new THREE.SphereGeometry(0.72, 20, 16),
+      demonSkin
     );
-    monsterHead.position.y = 1.9;
-    monster.add(monsterHead);
+    demonBody.scale.set(1, 1.35, 0.72);
+    demonBody.position.y = 1.25;
+    monster.add(demonBody);
+
+    const chestArmor = new THREE.Mesh(
+      new THREE.SphereGeometry(0.58, 16, 12),
+      demonArmor
+    );
+    chestArmor.scale.set(1, 1.15, 0.5);
+    chestArmor.position.set(0, 1.42, 0.34);
+    monster.add(chestArmor);
+
+    // Cabeça
+    const demonHead = new THREE.Mesh(
+      new THREE.SphereGeometry(0.43, 20, 16),
+      demonSkin
+    );
+    demonHead.position.set(0, 2.35, 0.12);
+    monster.add(demonHead);
+
+    // Olhos brilhantes
+    for (const x of [-0.19, 0.19]) {
+      const eye = new THREE.Mesh(
+        new THREE.SphereGeometry(0.085, 12, 12),
+        demonGlow
+      );
+      eye.position.set(x, 2.39, 0.49);
+      monster.add(eye);
+    }
+
+    // Chifres
+    for (const x of [-0.31, 0.31]) {
+      const horn = new THREE.Mesh(
+        new THREE.ConeGeometry(0.16, 0.85, 8),
+        demonArmor
+      );
+      horn.position.set(x, 2.92, 0.05);
+      horn.rotation.z = x < 0 ? 0.38 : -0.38;
+      monster.add(horn);
+    }
+
+    // Ombreiras com espinhos
+    for (const x of [-0.72, 0.72]) {
+      const shoulder = new THREE.Mesh(
+        new THREE.SphereGeometry(0.34, 12, 10),
+        demonArmor
+      );
+      shoulder.position.set(x, 1.85, 0);
+      monster.add(shoulder);
+
+      for (let j = 0; j < 2; j++) {
+        const spike = new THREE.Mesh(
+          new THREE.ConeGeometry(0.13, 0.55, 7),
+          demonGold
+        );
+        spike.position.set(x * 1.2, 2.1 + j * 0.2, 0);
+        spike.rotation.z = x < 0 ? 0.8 : -0.8;
+        monster.add(spike);
+      }
+
+      // Braços e garras
+      const arm = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.17, 0.65, 4, 8),
+        demonSkin
+      );
+      arm.position.set(x * 1.1, 1.25, 0.05);
+      arm.rotation.z = x < 0 ? -0.18 : 0.18;
+      monster.add(arm);
+
+      for (let j = 0; j < 3; j++) {
+        const claw = new THREE.Mesh(
+          new THREE.ConeGeometry(0.065, 0.38, 6),
+          demonGold
+        );
+        claw.position.set(x * 1.12 + (j - 1) * 0.13, 0.72, 0.22);
+        claw.rotation.x = Math.PI;
+        monster.add(claw);
+      }
+
+      // Pernas
+      const leg = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.2, 0.55, 4, 8),
+        demonArmor
+      );
+      leg.position.set(x * 0.42, 0.42, 0);
+      monster.add(leg);
+    }
+
+    // Espinhos nas costas
+    for (let i = 0; i < 5; i++) {
+      const spike = new THREE.Mesh(
+        new THREE.ConeGeometry(0.16, 0.65, 7),
+        demonArmor
+      );
+      spike.position.set(0, 1.15 + i * 0.3, -0.48);
+      spike.rotation.x = -0.7;
+      monster.add(spike);
+    }
+
+    // Aura vermelha no chão
+    const aura = new THREE.Mesh(
+      new THREE.TorusGeometry(1.15, 0.045, 8, 48),
+      demonGlow
+    );
+    aura.rotation.x = -Math.PI / 2;
+    aura.position.y = 0.08;
+    monster.add(aura);
+
     monster.position.set(0, 0, -7);
     scene.add(monster);
+
 
     // Floresta com copas em camadas
     const trunkMaterial = new THREE.MeshStandardMaterial({
