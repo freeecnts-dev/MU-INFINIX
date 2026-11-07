@@ -40,18 +40,66 @@ export default function GamePage() {
     scene.background = new THREE.Color(0x899bb0);
     scene.fog = new THREE.Fog(0x899bb0, 28, 85);
 
+
+    // Texturas procedurais do cenário
+    const makeTerrainTexture = (kind: 'grass' | 'stone') => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Falha ao criar textura');
+
+      if (kind === 'grass') {
+        ctx.fillStyle = '#354b32';
+        ctx.fillRect(0, 0, 512, 512);
+        for (let i = 0; i < 9000; i++) {
+          const shade = Math.floor(Math.random() * 55);
+          ctx.fillStyle = 'rgba(105,' + (125 + shade) + ',65,0.3)';
+          ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 4);
+        }
+      } else {
+        ctx.fillStyle = '#393b39';
+        ctx.fillRect(0, 0, 512, 512);
+        for (let row = 0; row < 18; row++) {
+          for (let col = 0; col < 7; col++) {
+            const x = col * 74 + (row % 2) * 8 + 3;
+            const y = row * 29 + 3;
+            const shade = 105 + Math.floor(Math.random() * 55);
+            ctx.fillStyle = 'rgb(' + shade + ',' + (shade - 3) + ',' + (shade - 9) + ')';
+            ctx.fillRect(x, y, 68, 25);
+            ctx.fillStyle = 'rgba(255,255,255,0.12)';
+            ctx.fillRect(x + 3, y + 2, 58, 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
+            ctx.fillRect(x + 2, y + 20, 62, 2);
+          }
+        }
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 4);
+      return texture;
+    };
+
+    const grassTexture = makeTerrainTexture('grass');
+    grassTexture.repeat.set(12, 12);
+    const pathTexture = makeTerrainTexture('stone');
+    pathTexture.repeat.set(2, 28);
+
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(120, 120),
-      new THREE.MeshStandardMaterial({ color: 0x354b32, roughness: 1 })
+      new THREE.MeshStandardMaterial({ map: grassTexture, roughness: 1 })
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -0.06;
     scene.add(ground);
 
-    // Caminho de pedras
+    // Caminho de pedras detalhado
     const path = new THREE.Mesh(
       new THREE.PlaneGeometry(5, 110),
-      new THREE.MeshStandardMaterial({ color: 0x77766d, roughness: 1 })
+      new THREE.MeshStandardMaterial({ map: pathTexture, roughness: 1 })
     );
     path.rotation.x = -Math.PI / 2;
     path.position.set(0, 0, -15);
