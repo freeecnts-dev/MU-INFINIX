@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Crimson Text', serif;
+    background-color: #0a0a0a;
+    color: #e8d9b0;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Cinzel', serif;
+  }
+  .text-gold {
+    color: #d4af37;
+  }
+  .text-gold-light {
+    color: #f0d97a;
+  }
+  .bg-dark {
+    background-color: #0a0a0a;
+  }
+  .bg-dark-card {
+    background-color: #141210;
+  }
+  .bg-dark-elevated {
+    background-color: #1c1a15;
+  }
+  .border-gold {
+    border-color: #d4af37;
+  }
+  .border-gold-dark {
+    border-color: #8a6f1f;
+  }
+  .gold-gradient {
+    background: linear-gradient(135deg, #d4af37 0%, #f0d97a 50%, #d4af37 100%);
+  }
+  .gold-text-gradient {
+    background: linear-gradient(135deg, #d4af37 0%, #f0d97a 50%, #d4af37 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .scrollbar-dark::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-dark::-webkit-scrollbar-track {
+    background: #141210;
+  }
+  .scrollbar-dark::-webkit-scrollbar-thumb {
+    background: #8a6f1f;
+    border-radius: 3px;
+  }
+  .scrollbar-dark::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.3) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite linear;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(212,175,55,0.2), 0 0 10px rgba(212,175,55,0.1); }
+  50% { box-shadow: 0 0 15px rgba(212,175,55,0.4), 0 0 25px rgba(212,175,55,0.2); }
+}
+
+.glow-gold {
+  animation: glow-pulse 3s infinite ease-in-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.scale-in {
+  animation: scale-in 0.2s ease-out;
+}
