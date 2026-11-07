@@ -20,6 +20,7 @@ export default function MonstersPage({ onCountChange }: MonstersPageProps) {
 
   const fetchMonsters = async () => {
     setLoading(true);
+    if (!supabase) { setError('Banco de dados não configurado.'); setLoading(false); return; }
     const { data, error } = await supabase.from('monsters').select('*').order('created_at', { ascending: false });
     if (error) {
       setError(error.message);
@@ -59,6 +60,7 @@ export default function MonstersPage({ onCountChange }: MonstersPageProps) {
     if (isNaN(hp) || hp < 1) { setError('Vida deve ser um número maior que zero.'); return; }
     if (isNaN(damage) || damage < 0) { setError('Dano deve ser um número válido.'); return; }
 
+    if (!supabase) { setError('Banco de dados não configurado.'); return; }
     setSaving(true);
     setError('');
 
@@ -78,6 +80,7 @@ export default function MonstersPage({ onCountChange }: MonstersPageProps) {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
+    if (!supabase) { setError('Banco de dados não configurado.'); return; }
     const { error: err } = await supabase.from('monsters').delete().eq('id', deleteTarget.id);
     if (err) { setError(err.message); return; }
     setDeleteTarget(null);

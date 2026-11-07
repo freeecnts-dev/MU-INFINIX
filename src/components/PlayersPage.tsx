@@ -40,6 +40,7 @@ export default function PlayersPage({ onCountChange }: PlayersPageProps) {
 
   const fetchPlayers = async () => {
     setLoading(true);
+    if (!supabase) { setError('Banco de dados não configurado.'); setLoading(false); return; }
     const { data, error } = await supabase.from('players').select('*').order('created_at', { ascending: false });
     if (error) {
       setError(error.message);
@@ -91,6 +92,7 @@ export default function PlayersPage({ onCountChange }: PlayersPageProps) {
     if (isNaN(hp) || hp < 1) { setError('Vida deve ser um número maior que zero.'); return; }
     if (isNaN(zen) || zen < 0) { setError('Zen deve ser um número válido (zero ou maior).'); return; }
 
+    if (!supabase) { setError('Banco de dados não configurado.'); return; }
     setSaving(true);
     setError('');
 
@@ -115,6 +117,7 @@ export default function PlayersPage({ onCountChange }: PlayersPageProps) {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
+    if (!supabase) { setError('Banco de dados não configurado.'); return; }
     const { error: err } = await supabase.from('players').delete().eq('id', deleteTarget.id);
     if (err) { setError(err.message); return; }
     setDeleteTarget(null);
@@ -123,6 +126,7 @@ export default function PlayersPage({ onCountChange }: PlayersPageProps) {
   };
 
   const toggleOnline = async (p: Player) => {
+    if (!supabase) { setError('Banco de dados não configurado.'); return; }
     const { error: err } = await supabase
       .from('players')
       .update({ is_online: !p.is_online })

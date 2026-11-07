@@ -12,13 +12,23 @@ export default function App() {
   const [loadingStats, setLoadingStats] = useState(true);
 
   const fetchStats = useCallback(async () => {
-    const [monRes, playRes] = await Promise.all([
-      supabase.from('monsters').select('*'),
-      supabase.from('players').select('*'),
-    ]);
-    setMonsters(monRes.data ?? []);
-    setPlayers(playRes.data ?? []);
-    setLoadingStats(false);
+    if (!supabase) {
+      setLoadingStats(false);
+      return;
+    }
+
+    try {
+      const [monRes, playRes] = await Promise.all([
+        supabase.from('monsters').select('*'),
+        supabase.from('players').select('*'),
+      ]);
+      setMonsters(monRes.data ?? []);
+      setPlayers(playRes.data ?? []);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+    } finally {
+      setLoadingStats(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -28,8 +38,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-dark-900 flex">
       <Sidebar currentPage={page} onNavigate={setPage} />
-
-      {/* Main content */}
       <main className="flex-1 min-w-0 pt-14 lg:pt-0">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           {page === 'inicio' && (
