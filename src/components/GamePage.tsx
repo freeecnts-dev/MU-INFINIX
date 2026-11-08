@@ -9,6 +9,7 @@ export default function GamePage() {
   const [playerMp] = useState(100);
   const [monsterHp, setMonsterHp] = useState(100);
   const [experience, setExperience] = useState(0);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   useEffect(() => {
     const container = canvasRef.current;
@@ -676,6 +677,36 @@ export default function GamePage() {
         </div>
       </div>
 
+
+      {/* MUINFINIX_MENU_BUTTONS */}
+      <div className="shrink-0 bg-slate-950/95 border-t border-amber-500/30 p-2">
+        {activeMenu && (
+          <div className="mb-2 rounded-xl border border-amber-400/60 bg-slate-900 p-3">
+            <div className="flex justify-between items-center">
+              <strong className="text-amber-300">{activeMenu}</strong>
+              <button onClick={() => setActiveMenu(null)} className="bg-red-900 rounded px-3 py-1 text-xs">FECHAR ✕</button>
+            </div>
+            <div className="text-center text-xs text-slate-200 py-3">
+              {activeMenu === '🎒 INVENTÁRIO' && 'Mochila, armas, armaduras e itens do guerreiro.'}
+              {activeMenu === '🛡 PERSONAGEM' && 'Atributos, nível e equipamentos do personagem.'}
+              {activeMenu === '✨ HABILIDADES' && 'Magias e ataques especiais.'}
+              {activeMenu === '📜 MISSÕES' && 'Missões e objetivos da aventura.'}
+              {activeMenu === '🗺 MAPA' && 'Mapa do mundo MU INFINIX.'}
+              {activeMenu === '🛒 LOJA' && 'Loja de itens e equipamentos.'}
+              {activeMenu === '⚙ OPÇÕES' && 'Configurações de áudio e controles.'}
+            </div>
+            <div className="text-center text-[10px] text-amber-500">SISTEMA EM DESENVOLVIMENTO</div>
+          </div>
+        )}
+        <div className="flex gap-1 overflow-x-auto">
+          {(['🎒 INVENTÁRIO', '🛡 PERSONAGEM', '✨ HABILIDADES', '📜 MISSÕES', '🗺 MAPA', '🛒 LOJA', '⚙ OPÇÕES'] as const).map((item) => (
+            <button key={item} onClick={() => setActiveMenu(activeMenu === item ? null : item)}
+              className={`shrink-0 rounded-lg border px-2 py-2 text-[10px] font-bold text-amber-100 ${activeMenu === item ? 'border-amber-300 bg-amber-900' : 'border-slate-600 bg-slate-800'}`}>
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="shrink-0 bg-slate-950 border-t border-amber-500/30 p-3 flex items-center justify-between">
         <div className="grid grid-cols-3 gap-1">
           <div />
