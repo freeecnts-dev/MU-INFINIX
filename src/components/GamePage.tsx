@@ -258,6 +258,89 @@ export default function GamePage() {
       player.add(knee);
     }
 
+
+    // MU_INFINIX_ARMOR_V2
+    // Capa medieval nas costas
+    const capeMaterial = new THREE.MeshStandardMaterial({
+      color: 0x101d3b, roughness: 0.95, metalness: 0.05,
+      side: THREE.DoubleSide
+    });
+    const cape = new THREE.Mesh(
+      new THREE.BoxGeometry(0.82, 1.12, 0.055),
+      capeMaterial
+    );
+    cape.position.set(0, 1.13, 0.29);
+    cape.rotation.x = -0.06;
+    player.add(cape);
+
+    // Ombreiras reforçadas em camadas
+    for (const side of [-1, 1]) {
+      const shoulderPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.39, 0.22, 0.39),
+        silver
+      );
+      shoulderPlate.position.set(side * 0.59, 1.78, -0.015);
+      shoulderPlate.rotation.z = side * -0.12;
+      player.add(shoulderPlate);
+
+      const shoulderTrim = new THREE.Mesh(
+        new THREE.BoxGeometry(0.34, 0.045, 0.405),
+        trimMetal
+      );
+      shoulderTrim.position.set(side * 0.59, 1.68, -0.025);
+      player.add(shoulderTrim);
+
+      // Proteção dos antebraços
+      const bracer = new THREE.Mesh(
+        new THREE.BoxGeometry(0.31, 0.34, 0.37),
+        silver
+      );
+      bracer.position.set(side * 0.58, 0.99, -0.045);
+      player.add(bracer);
+
+      const bracerBand = new THREE.Mesh(
+        new THREE.BoxGeometry(0.33, 0.055, 0.39),
+        gold
+      );
+      bracerBand.position.set(side * 0.58, 0.84, -0.05);
+      player.add(bracerBand);
+
+      // Placas frontais das coxas
+      const thighPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.29, 0.32, 0.09),
+        armor
+      );
+      thighPlate.position.set(side * 0.23, 0.52, -0.19);
+      player.add(thighPlate);
+
+      const thighDetail = new THREE.Mesh(
+        new THREE.BoxGeometry(0.22, 0.035, 0.025),
+        trimMetal
+      );
+      thighDetail.position.set(side * 0.23, 0.61, -0.245);
+      player.add(thighDetail);
+    }
+
+    // Placas sobrepostas no abdômen
+    for (let i = 0; i < 3; i++) {
+      const abdomenPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.48 - i * 0.035, 0.13, 0.07),
+        i === 1 ? armor : silver
+      );
+      abdomenPlate.position.set(0, 1.12 - i * 0.14, -0.285);
+      player.add(abdomenPlate);
+    }
+
+    // Emblema dourado na parte superior do peito
+    const chestEmblem = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.075, 0),
+      trimMetal
+    );
+    chestEmblem.position.set(0, 1.83, -0.29);
+    player.add(chestEmblem);
+
+    // MU INFINIX - FIM DA ARMADURA V2
+
     const sword = new THREE.Group();
     const blade = new THREE.Mesh(new THREE.BoxGeometry(0.13, 1.05, 0.045), silver);
     blade.position.y = 0.55;
