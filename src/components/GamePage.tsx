@@ -580,6 +580,148 @@ export default function GamePage() {
       scene.add(glow);
     }
 
+
+    // MEGA UPDATE 1.0 - FORTALEZA
+    const fortressStone = new THREE.MeshStandardMaterial({
+      color: 0x777d83, roughness: 0.9
+    });
+    const fortressDark = new THREE.MeshStandardMaterial({
+      color: 0x343c49, roughness: 0.85
+    });
+    const fortressGold = new THREE.MeshStandardMaterial({
+      color: 0xc99b43, metalness: 0.7, roughness: 0.3
+    });
+
+    // Muralhas laterais
+    for (const side of [-1, 1]) {
+      const wall = new THREE.Mesh(
+        new THREE.BoxGeometry(1.1, 3.2, 38),
+        fortressStone
+      );
+      wall.position.set(side * 15, 1.6, -9);
+      scene.add(wall);
+
+      // Parapeito superior
+      const top = new THREE.Mesh(
+        new THREE.BoxGeometry(1.5, 0.35, 38),
+        fortressDark
+      );
+      top.position.set(side * 15, 3.35, -9);
+      scene.add(top);
+
+      // Blocos decorativos da muralha
+      for (let i = 0; i < 13; i++) {
+        const block = new THREE.Mesh(
+          new THREE.BoxGeometry(1.65, 0.65, 0.7),
+          fortressStone
+        );
+        block.position.set(side * 15, 3.75, 9 - i * 3);
+        scene.add(block);
+      }
+
+      // Quatro torres de vigia
+      for (const z of [-25, 7]) {
+        const tower = new THREE.Group();
+
+        const base = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.65, 1.9, 5.5, 10),
+          fortressStone
+        );
+        base.position.y = 2.75;
+        tower.add(base);
+
+        const roof = new THREE.Mesh(
+          new THREE.ConeGeometry(2.05, 2.8, 10),
+          fortressDark
+        );
+        roof.position.y = 6.9;
+        tower.add(roof);
+
+        const band = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.95, 1.95, 0.35, 10),
+          fortressGold
+        );
+        band.position.y = 5.1;
+        tower.add(band);
+
+        tower.position.set(side * 15, 0, z);
+        scene.add(tower);
+      }
+    }
+
+    // Tochas iluminando o caminho
+    const torchWood = new THREE.MeshStandardMaterial({
+      color: 0x49301e, roughness: 1
+    });
+    const flameMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffa52f
+    });
+
+    for (const side of [-1, 1]) {
+      for (const z of [-3, -14, -25]) {
+        const torch = new THREE.Group();
+
+        const pole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.09, 0.13, 1.8, 8),
+          torchWood
+        );
+        pole.position.y = 0.9;
+        torch.add(pole);
+
+        const flame = new THREE.Mesh(
+          new THREE.SphereGeometry(0.23, 10, 8),
+          flameMaterial
+        );
+        flame.position.y = 1.95;
+        flame.scale.set(0.8, 1.5, 0.8);
+        torch.add(flame);
+
+        const light = new THREE.PointLight(0xffa044, 1.7, 9);
+        light.position.y = 2;
+        torch.add(light);
+
+        torch.position.set(side * 3.8, 0, z);
+        scene.add(torch);
+      }
+    }
+
+    // Cristais mágicos azuis
+    const crystalMaterial = new THREE.MeshStandardMaterial({
+      color: 0x16aaff,
+      metalness: 0.35,
+      roughness: 0.15,
+      emissive: 0x087bff,
+      emissiveIntensity: 1.4
+    });
+
+    for (const side of [-1, 1]) {
+      for (const z of [-9, -21]) {
+        const crystal = new THREE.Group();
+
+        const rock = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.65, 0),
+          fortressDark
+        );
+        rock.scale.set(1.4, 0.5, 1.2);
+        rock.position.y = 0.25;
+        crystal.add(rock);
+
+        const shard = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.85, 0),
+          crystalMaterial
+        );
+        shard.position.y = 1.05;
+        shard.scale.set(0.7, 1.8, 0.7);
+        crystal.add(shard);
+
+        const crystalLight = new THREE.PointLight(0x168cff, 1.5, 7);
+        crystalLight.position.y = 1.1;
+        crystal.add(crystalLight);
+
+        crystal.position.set(side * 6.5, 0, z);
+        scene.add(crystal);
+      }
+    }
     camera.position.set(0, 4, 7);
     camera.lookAt(0, 1, 0);
 
